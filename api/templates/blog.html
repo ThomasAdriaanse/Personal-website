@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block title %} Blog {% endblock %} {% block content
+%}
+<h1 class="text-secondary">blog</h1>
+
+<p>
+  This blog’s purpose is to give others an insight into what sort of things I find interesting, as well as a place for me to organize my thoughts.
+</p>
+<p>
+  Some of my writings summarize the work of others in cases where I think their ideas are important and I can add some commentary of my own.
+</p>
+<p>
+  Other writings act as a learning tool for myself, especially in cybersecurity; If I can explain it effectively, then it is a good indication that I have a solid grasp of the subject matter.
+</p>
+
+
+
+<br />
+{% for post in posts %}
+<a
+  href="{{ url_for('post', name=post.path.replace('blogs/', '')) }}"
+  class="text-decoration-none">
+  <div
+    class="container bg-dark list-group-item mb-2 text-light border-secondary rounded">
+    <div class="row justify-content-between align-items-center">
+      <div class="col">{{ post.title }}</div>
+      <div class="col text-right">
+        <span class="badge badge-pill bg-primary text-white"
+          >{{ post.meta.date }}</span
+        >
+      </div>
+    </div>
+  </div>
+</a>
+{% endfor %} {% endblock %}
