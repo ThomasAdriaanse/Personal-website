@@ -2,6 +2,7 @@ title: Devops
 date: 2024-09-11
 published: Yes
 
+# Learning Devops
 Previously when I was creating my website, I tried to be as simple as possible for the developmment pipeline. I figuered that I prefer to spend my time learning about the infrastruccture of websites, then the infrastructure of the development process. My process looked like this:
 
 1. Set up github repo only using main
