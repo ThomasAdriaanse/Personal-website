@@ -19,6 +19,26 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+
+    # Use SonarScanner from Docker to ensure it uses the correct Java version
+    - name: Run SonarScanner in Docker
+      run: |
+        docker run --rm \
+          -e SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} \
+          -e SONAR_HOST_URL=https://sonarcloud.io \
+          -v $(pwd):/usr/src \
+          sonarsource/sonar-scanner-cli:latest \
+          sonar-scanner \
+          -Dsonar.projectKey=ThomasAdriaanse_Personal-website \
+          -Dsonar.organization=thomasadriaanse \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
     # Log in to Amazon ECR
     - name: Log in to Amazon ECR
       run: |
