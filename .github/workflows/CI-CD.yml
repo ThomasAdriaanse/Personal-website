@@ -25,25 +25,24 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-      # Install SonarScanner CLI
+    # Install SonarScanner CLI
     - name: Install SonarScanner
       run: |
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
         unzip sonar-scanner-cli-4.6.2.2472-linux.zip
         export PATH=$PATH:$(pwd)/sonar-scanner-4.6.2.2472-linux/bin
 
-
-      # SAST with SonarCloud
+    # SAST with SonarCloud
     - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io 
       run: |
-          -Dsonar.projectKey=ThomasAdriaanse_Personal-website
-          -Dsonar.organization=thomasadriaanse
-          -Dsonar.host.url=https://sonarcloud.io
+        sonar-scanner \
+          -Dsonar.projectKey=ThomasAdriaanse_Personal-website \
+          -Dsonar.organization=thomasadriaanse \
+          -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-
 
     # Log in to Amazon ECR
     - name: Log in to Amazon ECR
