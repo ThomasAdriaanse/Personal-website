@@ -38,6 +38,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io 
+        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.12-7/x64
       run: |
         export SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux
         export PATH=$SONAR_SCANNER_HOME/bin:$PATH
