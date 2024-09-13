@@ -25,13 +25,13 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-    # Install SonarScanner CLI and update PATH
+    # Install SonarScanner CLI
     - name: Install SonarScanner
       run: |
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
         unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-        echo "SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux" >> $GITHUB_ENV
-        echo "PATH=\$PATH:\$SONAR_SCANNER_HOME/bin" >> $GITHUB_ENV
+        export SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux
+        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
 
     # SAST with SonarCloud
     - name: SonarCloud Scan
@@ -39,6 +39,8 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io 
       run: |
+        export SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux
+        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
         sonar-scanner \
           -Dsonar.projectKey=ThomasAdriaanse_Personal-website \
           -Dsonar.organization=thomasadriaanse \
