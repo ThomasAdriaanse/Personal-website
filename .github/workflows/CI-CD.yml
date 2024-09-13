@@ -25,26 +25,15 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-    # Install SonarScanner CLI and explicitly use Java 17
-    - name: Install SonarScanner
+    # Use SonarScanner from Docker to ensure it uses the correct Java version
+    - name: Run SonarScanner in Docker
       run: |
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-        unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-        export SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux
-        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-
-    # SAST with SonarCloud
-    - name: SonarCloud Scan
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io 
-        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.12-7/x64
-      run: |
-        export SONAR_SCANNER_HOME=$(pwd)/sonar-scanner-4.6.2.2472-linux
-        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-        export JAVA_HOME=/opt/hostedtoolcache/Java_Adopt_jdk/17.0.12-7/x64
-        export PATH=$JAVA_HOME/bin:$PATH
-        sonar-scanner \
+        docker run --rm \
+          -e SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} \
+          -e SONAR_HOST_URL=https://sonarcloud.io \
+          -v $(pwd):/usr/src \
+          sonarsource/sonar-scanner-cli:latest \
+          sonar-scanner \
           -Dsonar.projectKey=ThomasAdriaanse_Personal-website \
           -Dsonar.organization=thomasadriaanse \
           -Dsonar.host.url=https://sonarcloud.io \
