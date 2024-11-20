@@ -22,4 +22,11 @@ EXPOSE 5000
 # Start the application using pipenv to ensure the correct Python environment
 # Run Flask in debug mode with specified app entry point
 
-CMD ["pipenv", "run", "flask", "--debug", "--app", "api/index.py", "run", "--host=0.0.0.0", "--port=5000"]
+
+# Define environment variable for production
+ENV FLASK_ENV=production
+
+# Command to run your app
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+
+#CMD ["pipenv", "run", "flask", "--debug", "--app", "api/index.py", "run", "--host=0.0.0.0", "--port=5000"]

@@ -73,7 +73,7 @@ jobs:
           docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/website-new:latest
           docker stop new_website_container || true
           docker rm new_website_container || true
-          docker run -d -p 5000:5000 --name new_website_container ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/website-new:latest
+          docker run -d -p 5000:5000 --name new_website_container ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/website-new:latest gunicorn  -w 4 -b 0.0.0.0:5000 app:app
 
           # restart nginx to update website
           sudo systemctl restart nginx
