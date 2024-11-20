@@ -4,7 +4,7 @@ published: true
 
 ### Introduction
 
-I wanted to showcase my full-stack development skills with a personal website. I started by choosing a sleek and simple template from [this GitHub repo](https://github.com/buildwithdan/flask-portfolio) that would allow me to easily add my own touch.
+I wanted to showcase my full-stack development skills with a personal website. I started by choosing a simple template from [this GitHub repo](https://github.com/buildwithdan/flask-portfolio) that would allow me to easily add my own touch.
 
 ![Website Diagram](/static/images/website_diagram.png)
 ### Flask
