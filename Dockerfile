@@ -1,32 +1,23 @@
-# Use the official Python image as the base image
-FROM python:3.9-slim
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
 # Set the working directory in the container
-WORKDIR /flask-portfolio
+WORKDIR /usr/src/app
 
-# Install pipenv
-RUN pip install --no-cache-dir pipenv
+# Copy the requirements file into the container
+COPY requirements.txt ./
 
-# Copy Pipfile and Pipfile.lock into the container
-COPY Pipfile Pipfile.lock ./
+# Install any necessary dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies using pipenv
-RUN pipenv install --ignore-pipfile
-
-# Copy the rest of the application code into the container
+# Copy the entire project directory contents into the container at /usr/src/app
 COPY . .
 
-# # Expose the port your app runs on, this doesnt do anything, its just for documentation purposes.
+# Make port 5000 available to the world outside this container
 EXPOSE 5000
-
-# Start the application using pipenv to ensure the correct Python environment
-# Run Flask in debug mode with specified app entry point
-
 
 # Define environment variable for production
 ENV FLASK_ENV=production
 
 # Command to run your app
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "api/index:app"]
-
-#CMD ["pipenv", "run", "flask", "--debug", "--app", "api/index.py", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]

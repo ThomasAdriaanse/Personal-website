@@ -9,24 +9,29 @@ import re
 DEBUG = True
 FLATPAGES_AUTO_RELOAD = DEBUG
 FLATPAGES_EXTENSION = '.md'
-FLATPAGES_ROOT = 'content'
+FLATPAGES_ROOT = 'app/content'
 DIR_BLOG_POSTS = 'blogs'
 DIR_PROJECTS = 'projects'
 
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="app/templates",  
+    static_folder="app/static"      
+)
+
 flatpages = FlatPages(app)
 freezer = Freezer(app)
 app.config.from_object(__name__)
 # app.config['SERVER_NAME'] = '0.0.0.0:6000'
 
 
-# this context processors allows the below variables to be used in all templates, and you dont need to define it in each.
+# this context processors allows the below variables to be used in all templates, and you dont need to define it in each.   
 @app.context_processor
 def inject_global_variables():
     config = configparser.ConfigParser()
-    config.read('api/config.ini')
-
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
+    config.read(config_path)
     # Access the variables in the "configs" section
     domain = config['configs']['domain']
     email = config['configs']['email']
