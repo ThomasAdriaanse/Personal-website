@@ -1,46 +1,19 @@
-title: How this website works
+title: The Devops Revelation
 date: 2023-01-02
-published: true
+published: yes
 
-### Introduction
 
-I wanted to showcase my full-stack development skills with a personal website. I started by choosing a simple template from [this GitHub repo](https://github.com/buildwithdan/flask-portfolio) that would allow me to easily add my own touch.
+I started doing Capture The Flags just for fun a while back because computer security is pretty interesting, and who doesn't want to feel like a hacker. The problem with offensive computer security is that it can be very overwhelming to try and attack somthing if you dont have a very good understanding of what you are trying to attack. A lot of the CTFs I would do were on web based applications, so I decided a great way to get better at attacking them was to make one myself. The other reason I wanted to make a website was to have a convienent place to put stuff I make so that people could easily check it out.
+
+Because of my noob status in building web applications, I stareted with a template (template from [this GitHub repo](https://github.com/buildwithdan/flask-portfolio)) and decided to work from there. I really didnt change the internal structure of the website much, like the flask routing and the frontend design, but I made a second site later where I focused on learning those areas.
+
+I was mainly concerned with learning about the infrastructure which enables the site to run properly, so thats what this post will be about, the devops. Here is a diagram of the devops pipeline for the website:
 
 ![Website Diagram](/static/images/website_diagram.png)
-### Flask
 
-Flask is a lightweight web framework that allowed me to get up and running quickly without unnecessary complexity. One of its key strengths is minimalist design—since Flask doesn’t enforce a particular structure, I can customize it to my needs. Also, Flask is widely used in the Python community, and I am familiar with Python, making it an easy choice for the backend.
+I'll try to break it down in parts and explain what ive learned.
 
-##### Why Flask Over Django?
+I used Amazon Web Service (AWS) because I figured it would be the most useful to learn long-term considering its popularity. AWS has a bunch of services, most of which seem to be in service of their primary product: cloud compute. Their cloud compute is called Elastic Cloud Compute or EC2 for short. You can rent an EC2 server to use for about 15$ CAD per month on the cheapest end, which is what I am using (note: "server" is an incredibly broad term for a machine which performs a service. This is an appropriate term for EC2s because that's what they do: preform any service you want from the cloud). When you rent an EC2 instead of it being a phycisal machine, you rent an "instance" which is a virtual machine, which is a part of a larger computer. You can interact with your EC2 instance by SSHing into it like you would any other computer. From there you can pull code from a repository, like Amazon's Elastic Container Registry. Because I want my code to be viewable to the public and because i'm used to it, I just used Github as the repoistory I push to, but I push to Amazon ECR as well. From there when I ssh into my EC2, I can pull the new code from my ECR and restart the web service using the newly pulled code.
 
-While Django provides more built-in features, Flask’s simplicity gave me more control over what I wanted to implement without the overhead of a larger framework. For a personal project like this, where I didn’t need a full-blown admin interface or built-in user authentication, Flask seemed a more efficient option.
+I used Nginx and gunicorn to host my web server. I use gunicorn for multiple processes for better fault tolerance and for parallelism. For the Nginx conf file I just copied an online template and added the correct path to my SSL certificates and made sure to serve the site over http and https, redirecting any http traffic to https. The only annoying thing about using https is that I have to manually grab the new SSL certificated bundle every few months, but ill probably automate that later. I use Porkbun as my domain and SSL provider, but I am not sure if they have an API for grabbing the bundles. Seems unlikely given that they require an authenticator app for logins but you never know.
 
-### AWS EC2
-
-I chose AWS EC2 to host my website, managing the server manually without auto-scaling or clustering for simplicity and because I don't expect much traffic. Since the traffic for this project is likely low, EC2 with Docker is a cost-effective solution. AWS Fargate offers automatic scaling and simpler container management, but it costs more and i thought it was a good idea to more hands on experience with AWS instances. Besides, EC2 offers more control over the server environment if i want to do fancy stuff in the future.
-
-### Docker
-
-I like docker because it eliminates the typical "works on my machine" problem via containerisation. With Docker, I package all the dependencies, including the Flask app and the web server, into a container which ensures my development and production environments are identical.
-
-For example, I used a Docker image with a pre-configured Python environment and dependencies, which allows me to test locally before pushing the image to AWS. Using Docker in production also helps with easier updates. Instead of manually installing or updating dependencies, I simply rebuild the Docker image, push it to my Elastic Container Registry (ECR), and pull it down on the EC2 instance.
-
-### Nginx
-
-I’m using Nginx as a reverse proxy to route web traffic to my Flask app. Nginx is known for its high performance and reliability in serving static content and handling multiple client requests efficiently. It allows me to offload some of the heavy lifting, such as managing incoming HTTP requests, which improves the scalability and security of my website.
-
-#### Benefits of Nginx
-
-Nginx adds a layer of security to my stack by acting as a gateway that routes traffic to the Flask app. It also supports SSL termination, which helps to encrypt traffic between the client and server. With Nginx, I can configure caching and optimize request handling, ensuring that the server remains responsive even under load.
-
-### Gunicorn
-
-Initially, I was exposing Flask’s default development server on port 5000, which isn’t suitable for production as it’s neither optimized nor secure. Enter Gunicorn—a WSGI server designed for running Python web applications in production.
-
-#### Benefits of Gunicorn
-
-Gunicorn acts as a bridge between Nginx and my Flask application, handling multiple client requests by spawning worker processes. It’s fast, reliable, and easily integrates with Flask. By using Gunicorn in conjunction with Nginx, I ensure that my app can handle concurrent traffic while maintaining security.
-
-### SSL Encryption
-
-To ensure secure communication between users and my site, I used SSL/TLS certificates, obtained from Porkbun. This protects data in transit, giving visitors confidence that their interactions with my site are secure.
